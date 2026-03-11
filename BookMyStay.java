@@ -1,6 +1,3 @@
-import java.util.HashMap;
-import java.util.Map;
-
 abstract class Room {
     protected int numberOFBeds;
     protected int squareFeet;
