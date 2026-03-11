@@ -1,83 +1,78 @@
-abstract class Room {
-    protected int numberOFBeds;
-    protected int squareFeet;
-    protected double pricePerNight;
-    public Room(int numberOFBeds, int squareFeet, double pricePerNight) {
-        this.numberOFBeds = numberOFBeds;
-        this.squareFeet = squareFeet;
-        this.pricePerNight = pricePerNight;
-    }
-    public void displayRoomDetails() {
-        System.out.println("Number of Beds: " + numberOFBeds);
-        System.out.println("Square Feet: " + squareFeet);
-        System.out.println("Price per Night: " + pricePerNight);
-    }
-}
-class SingleRoom extends Room {
-    public SingleRoom() {
-        super(1, 250, 1500.0);
-    }
-}
-class DoubleRoom extends Room{
-    public DoubleRoom(){
-        super(2, 400, 2500.0);
-    }
-}
-class SuiteRoom extends Room{
-    public SuiteRoom(){
-        super(3, 750 , 5000.0);
-    }
-}
+```java
+import java.util.*;
 
-
-class RoomInventory {
-
-    private Map<String, Integer> roomAvailability;
-
-    public RoomInventory() {
-        roomAvailability = new HashMap<>();
-        initializeInventory();
-    }
-
-    private void initializeInventory() {
-        roomAvailability.put("Single", 5);
-        roomAvailability.put("Double", 3);
-        roomAvailability.put("Suite", 2);
-    }
-
-    public Map<String, Integer> getRoomAvailability() {
-        return roomAvailability;
-    }
-
-    public void updateAvailability(String roomType, int count) {
-        roomAvailability.put(roomType, count);
-    }
-}
 public class BookMyStay {
 
     public static void main(String[] args) {
 
-        SingleRoom single = new SingleRoom();
-        DoubleRoom doubleRoom = new DoubleRoom();
-        SuiteRoom suite = new SuiteRoom();
-        RoomInventory inventory = new RoomInventory();
-        System.out.println("Hotel Room Inventory Status\n");
-        System.out.println("Single Room:");
-        single.displayRoomDetails();
-        System.out.println("Available Rooms: " +
-                inventory.getRoomAvailability().get("Single"));
-        System.out.println();
+        AddOnService breakfast = new AddOnService("Breakfast", 15.0);
+        AddOnService spa = new AddOnService("Spa", 50.0);
+        AddOnService airportPickup = new AddOnService("Airport Pickup", 30.0);
 
-        System.out.println("Double Room:");
-        doubleRoom.displayRoomDetails();
-        System.out.println("Available Rooms: " +
-                inventory.getRoomAvailability().get("Double"));
-        System.out.println();
+        AddOnServiceManager manager = new AddOnServiceManager();
 
+        String reservationId = "RES101";
 
-        System.out.println("Suite Room:");
-        suite.displayRoomDetails();
-        System.out.println("Available Rooms: " +
-                inventory.getRoomAvailability().get("Suite"));
+        manager.addService(reservationId, breakfast);
+        manager.addService(reservationId, spa);
+        manager.addService(reservationId, airportPickup);
+
+        double totalCost = manager.calculateTotalServiceCost(reservationId);
+
+        System.out.println("Reservation ID: " + reservationId);
+        System.out.println("Total Add-On Cost: $" + totalCost);
     }
 }
+
+class AddOnService {
+
+    private String serviceName;
+    private double cost;
+
+    public AddOnService(String serviceName, double cost) {
+        this.serviceName = serviceName;
+        this.cost = cost;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+}
+
+class AddOnServiceManager {
+
+    private Map<String, List<AddOnService>> servicesByReservation;
+
+    public AddOnServiceManager() {
+        servicesByReservation = new HashMap<>();
+    }
+
+    public void addService(String reservationId, AddOnService service) {
+
+        servicesByReservation
+                .computeIfAbsent(reservationId, k -> new ArrayList<>())
+                .add(service);
+    }
+
+    public double calculateTotalServiceCost(String reservationId) {
+
+        List<AddOnService> services = servicesByReservation.get(reservationId);
+
+        if (services == null) {
+            return 0;
+        }
+
+        double total = 0;
+
+        for (AddOnService service : services) {
+            total += service.getCost();
+        }
+
+        return total;
+    }
+}
+```
