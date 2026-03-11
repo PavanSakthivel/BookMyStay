@@ -41,5 +41,5 @@ public class BookMyStayApp {
         dR.displayRoomDetails();
         System.out.println("\nSuite Room Details:");
         suiteR.displayRoomDetails();
-    }
+
 }
