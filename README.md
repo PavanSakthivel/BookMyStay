@@ -1,1 +1,0 @@
-BookMyStay app for STEP
